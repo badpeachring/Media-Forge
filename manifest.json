@@ -1,0 +1,23 @@
+{
+  "name": "Media Forge",
+  "short_name": "Media Forge",
+  "start_url": "/Media-Forge/",
+  "scope": "/Media-Forge/",
+  "display": "standalone",
+  "background_color": "#09090b",
+  "theme_color": "#18181b",
+  "icons": [
+    {
+      "src": "/Media-Forge/icon.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/Media-Forge/icon.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}
