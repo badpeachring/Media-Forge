@@ -3,266 +3,225 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-  <title>Media Forge</title>
-  <link rel="manifest" href="manifest.json?v=1">
+  <title>Media Forge v4.0</title>
+  <link rel="manifest" href="manifest.json?v=4">
   <script src="https://cdn.tailwindcss.com"></script>
-  <style>
-    body{font-family:system-ui,-apple-system,sans-serif;overscroll-behavior:none;}
-    .mf-obsidian{background:#09090b;color:#f4f4f5;}
-    .mf-crimson{background:radial-gradient(circle at top,#2a0a14 0%,#09090b 70%);color:#f4f4f5;}
-    .mf-cyber{background:radial-gradient(circle at top,#082032 0%,#060b14 70%);color:#e2e8f0;}
-    .mf-olive{background:radial-gradient(circle at top,#1a2417 0%,#0b0f0a 70%);color:#f4f4f5;}
-  </style>
+  <style>body{font-family:system-ui,-apple-system,sans-serif;overscroll-behavior:none;background:#09090b;color:#f4f4f5;}</style>
 </head>
-<body class="mf-obsidian min-h-screen flex flex-col">
-  <header class="bg-black/80 backdrop-blur border-b border-zinc-800 px-3 py-2.5 flex items-center justify-between sticky top-0 z-30">
+<body class="min-h-screen flex flex-col pb-16">
+  <header class="bg-zinc-950/95 border-b border-zinc-800 px-3 py-2.5 flex items-center justify-between gap-2 sticky top-0 z-30">
     <div>
-      <div class="text-sm font-black tracking-wider text-fuchsia-400">MEDIA FORGE</div>
-      <div class="text-[10px] text-zinc-400">Free Uncensored Multi-Engine Studio</div>
+      <div class="flex items-center gap-1.5">
+        <span class="text-sm font-black tracking-wider text-fuchsia-400">MEDIA FORGE</span>
+        <span id="mfVerBadge" class="px-1.5 py-0.5 rounded bg-emerald-500/20 border border-emerald-400/40 text-[9px] font-mono font-black text-emerald-300">v4.0</span>
+      </div>
+      <div class="text-[10px] text-zinc-400">Unified Uncensored AI &amp; Smart Photo Editor</div>
     </div>
-    <button id="quickGuideBtn" class="px-2.5 py-1.5 rounded-lg bg-zinc-900 border border-zinc-700 text-left">
-      <span class="block text-[11px] font-bold text-cyan-300">? Quick Guide</span>
-      <span class="block text-[9px] text-zinc-400">How every tool works</span>
+    <button id="mfGuideBtn" type="button" class="px-2.5 py-1.5 rounded-xl bg-zinc-900 border border-zinc-700 text-left">
+      <span class="block text-[11px] font-black text-cyan-300">? Quick Guide</span>
+      <span class="block text-[9px] text-zinc-400">Inpaint tips</span>
     </button>
   </header>
 
-  <nav id="mfTabs" class="bg-zinc-950/90 border-b border-zinc-800 px-2 py-2 grid grid-cols-4 gap-1.5">
-    <button data-tab="image" class="mf-tab px-2 py-1.5 rounded-xl bg-fuchsia-500/20 border border-fuchsia-400/50 text-fuchsia-200 text-center">
-      <span class="block text-xs font-black">Image</span>
-      <span class="block text-[9px] opacity-75">Text &amp; Photo</span>
-    </button>
-    <button data-tab="video" class="mf-tab px-2 py-1.5 rounded-xl bg-zinc-900 border border-zinc-800 text-zinc-400 text-center">
-      <span class="block text-xs font-black">Video Lab</span>
-      <span class="block text-[9px] opacity-75">Remote GPU</span>
-    </button>
-    <button data-tab="vault" class="mf-tab px-2 py-1.5 rounded-xl bg-zinc-900 border border-zinc-800 text-zinc-400 text-center">
-      <span class="block text-xs font-black">Vault</span>
-      <span class="block text-[9px] opacity-75">Saved Media</span>
-    </button>
-    <button data-tab="custom" class="mf-tab px-2 py-1.5 rounded-xl bg-zinc-900 border border-zinc-800 text-zinc-400 text-center">
-      <span class="block text-xs font-black">Customize</span>
-      <span class="block text-[9px] opacity-75">Theme &amp; Keys</span>
-    </button>
+  <nav id="mfTabs" class="bg-zinc-950/95 border-b border-zinc-800 px-2 py-2 grid grid-cols-5 gap-1 sticky top-[57px] z-20">
+    <button data-tab="image" class="mf-tab px-1 py-1.5 rounded-xl bg-fuchsia-500/20 border border-fuchsia-400/50 text-fuchsia-200 text-center"><span class="block text-xs font-black">Image</span><span class="block text-[9px] opacity-75">Edit &amp; Gen</span></button>
+    <button data-tab="video" class="mf-tab px-1 py-1.5 rounded-xl bg-zinc-900 border border-zinc-800 text-zinc-400 text-center"><span class="block text-xs font-black">Video</span><span class="block text-[9px] opacity-75">Lab</span></button>
+    <button data-tab="queue" class="mf-tab px-1 py-1.5 rounded-xl bg-zinc-900 border border-zinc-800 text-zinc-400 text-center"><span class="block text-xs font-black">Queue <span id="mfQBadge" class="text-amber-300">(0)</span></span><span class="block text-[9px] opacity-75">Stacked</span></button>
+    <button data-tab="vault" class="mf-tab px-1 py-1.5 rounded-xl bg-zinc-900 border border-zinc-800 text-zinc-400 text-center"><span class="block text-xs font-black">Vault</span><span class="block text-[9px] opacity-75">Saved</span></button>
+    <button data-tab="custom" class="mf-tab px-1 py-1.5 rounded-xl bg-zinc-900 border border-zinc-800 text-zinc-400 text-center"><span class="block text-xs font-black">Keys</span><span class="block text-[9px] opacity-75">Settings</span></button>
   </nav>
 
-  <main class="flex-1 p-3 space-y-3 overflow-y-auto pb-16">
+  <main class="flex-1 p-3 max-w-xl w-full mx-auto space-y-3">
     <section id="view-image" class="space-y-3">
+      <div class="bg-zinc-900/95 border border-purple-500/40 rounded-2xl p-3 space-y-2">
+        <div class="flex items-center justify-between gap-2">
+          <div><div class="text-[10px] font-black uppercase text-purple-400">1-Tap Overdrive Presets</div><div class="text-xs font-black text-white">Auto-picks fastest non-black GPU &amp; safe settings</div></div>
+          <button id="mfOdResetBtn" type="button" class="px-2.5 py-1 rounded-lg bg-zinc-800 text-[10px] font-bold text-zinc-300">Reset</button>
+        </div>
+        <div id="mfOverdriveGrid" class="grid grid-cols-2 gap-1.5"></div>
+        <div id="mfOverdriveHud" class="text-[10px] font-mono text-cyan-300 bg-black/60 border border-zinc-800 rounded-lg px-2.5 py-1.5">Loading live GPUs...</div>
+        <button id="mfFluxFastBtn" type="button" class="w-full py-2 px-3 rounded-xl bg-gradient-to-r from-emerald-600/80 to-cyan-600/80 border border-emerald-300/40 text-left">
+          <span class="block text-xs font-black text-white">⚡ Instant 10s Render (ZeroGPU FLUX 1024px)</span>
+          <span class="block text-[9px] text-emerald-100/85">Skips AI Horde queue completely for fast SFW Text-to-Image</span>
+        </button>
+      </div>
+
       <div class="grid grid-cols-2 gap-2">
-        <button id="modeTxtBtn" class="p-2.5 rounded-xl bg-fuchsia-600/25 border border-fuchsia-400 text-left">
-          <span class="block text-xs font-black text-white">Text-to-Image</span>
-          <span class="block text-[10px] text-zinc-300">Create brand new art from words</span>
-        </button>
-        <button id="modeImgBtn" class="p-2.5 rounded-xl bg-zinc-900 border border-zinc-800 text-left">
-          <span class="block text-xs font-black text-zinc-300">Photo-to-Image</span>
-          <span class="block text-[10px] text-zinc-400">Restyle or transform your photo</span>
-        </button>
+        <button id="modeTxtBtn" type="button" class="p-2.5 rounded-xl border bg-fuchsia-600/20 border-fuchsia-400 text-left"><span class="block text-xs font-black text-white">Text-to-Image</span><span class="block text-[10px] text-zinc-400">Create from words</span></button>
+        <button id="modeImgBtn" type="button" class="p-2.5 rounded-xl border bg-zinc-900 border-zinc-800 text-left"><span class="block text-xs font-black text-white">Photo Editor</span><span class="block text-[10px] text-zinc-400">Tap-select &amp; swap</span></button>
       </div>
 
-      <div id="imgUploadWrap" class="hidden bg-zinc-900/90 border border-cyan-500/40 rounded-xl p-3 space-y-2">
+      <div id="imgUploadWrap" class="hidden bg-zinc-900/95 border border-cyan-500/45 rounded-2xl p-3 space-y-2.5">
         <div class="flex items-center justify-between gap-2">
-          <div>
-            <div class="text-xs font-black text-cyan-300">Source Photo (Img2Img)</div>
-            <div class="text-[10px] text-zinc-400">Auto-resizes to match output dimensions cleanly</div>
+          <div><div class="text-xs font-black text-cyan-300">Smart Photo Editor &amp; Selector</div><div id="mfToolTip" class="text-[10px] text-zinc-400">Load or paste a photo, then Tap a shirt/object to highlight it!</div></div>
+          <button id="clearSourceBtn" type="button" class="hidden px-2 py-1 rounded-lg bg-rose-950 border border-rose-500/40 text-[10px] font-bold text-rose-300 shrink-0">Remove</button>
+        </div>
+
+        <div class="grid grid-cols-3 gap-1.5">
+          <label class="py-2 px-2 rounded-xl bg-cyan-950/70 border border-cyan-400/50 text-center cursor-pointer">
+            <span class="block text-[11px] font-black text-cyan-200">📂 Gallery</span>
+            <span class="block text-[9px] text-cyan-300/75">Pick photo</span>
+            <input id="mfPickFileIn" type="file" accept="image/*" class="hidden">
+          </label>
+          <button id="mfPasteImgBtn" type="button" class="py-2 px-2 rounded-xl bg-fuchsia-950/70 border border-fuchsia-400/50 text-center">
+            <span class="block text-[11px] font-black text-fuchsia-200">📋 Paste</span>
+            <span class="block text-[9px] text-fuchsia-300/75">Clipboard</span>
+          </button>
+          <button id="mfHdToggleBtn" type="button" class="py-2 px-2 rounded-xl bg-zinc-950 border border-zinc-700 text-center">
+            <span id="mfHdLbl" class="block text-[11px] font-black text-emerald-300">Safe 512px</span>
+            <span class="block text-[9px] text-zinc-400">Free cap</span>
+          </button>
+        </div>
+
+        <div class="grid grid-cols-5 gap-1">
+          <button data-tl="wand" type="button" class="mf-tl p-1.5 rounded-lg border text-center bg-rose-600/30 border-rose-400"><span class="block text-xs font-black text-white">🪄 Tap</span><span class="block text-[8px] text-rose-200">Wand</span></button>
+          <button data-tl="circle" type="button" class="mf-tl p-1.5 rounded-lg border text-center bg-zinc-950 border-zinc-800"><span class="block text-xs font-black text-zinc-200">⭕ Loop</span><span class="block text-[8px] text-zinc-400">Circle</span></button>
+          <button data-tl="box" type="button" class="mf-tl p-1.5 rounded-lg border text-center bg-zinc-950 border-zinc-800"><span class="block text-xs font-black text-zinc-200">🔲 Box</span><span class="block text-[8px] text-zinc-400">Drag</span></button>
+          <button data-tl="brush" type="button" class="mf-tl p-1.5 rounded-lg border text-center bg-zinc-950 border-zinc-800"><span class="block text-xs font-black text-zinc-200">🖌️ Draw</span><span class="block text-[8px] text-zinc-400">Brush</span></button>
+          <button data-tl="erase" type="button" class="mf-tl p-1.5 rounded-lg border text-center bg-zinc-950 border-zinc-800"><span class="block text-xs font-black text-zinc-200">🧽 Rub</span><span class="block text-[8px] text-zinc-400">Erase</span></button>
+        </div>
+
+        <div class="w-full rounded-xl overflow-hidden border border-rose-500/40 bg-black flex items-center justify-center min-h-[150px] p-1 select-none">
+          <div id="mfNoImgHint" class="text-xs text-zinc-500 text-center p-4">Tap 📂 Gallery or 📋 Paste above to load a photo here.</div>
+          <div id="mfCanvasWrap" class="hidden relative inline-block max-w-full">
+            <canvas id="mfBgCanvas" class="block max-w-full max-h-80 w-auto h-auto"></canvas>
+            <canvas id="mfMaskCanvas" class="absolute inset-0 w-full h-full touch-none opacity-65"></canvas>
+            <canvas id="mfOvCanvas" class="absolute inset-0 w-full h-full pointer-events-none"></canvas>
           </div>
-          <button id="clearSourceBtn" class="hidden px-2.5 py-1 rounded-lg bg-rose-950 border border-rose-500/40 text-[10px] font-bold text-rose-300">Remove Photo</button>
         </div>
-        <label class="block w-full py-2.5 px-3 rounded-xl bg-cyan-950/60 border border-cyan-400/50 text-center cursor-pointer">
-          <span class="block text-xs font-black text-cyan-200">Pick Photo From Phone</span>
-          <span class="block text-[10px] text-cyan-300/75">Supports JPG, PNG, WebP from camera or gallery</span>
-          <input id="sourceFileIn" type="file" accept="image/*" class="hidden">
-        </label>
-        <img id="sourcePreview" class="hidden w-full max-h-48 object-contain rounded-lg border border-zinc-700 bg-black">
-        <div id="denoiseWrap" class="space-y-1">
-          <div class="flex justify-between text-[11px]"><span class="font-bold text-zinc-200">Change Strength (Denoising)</span><span id="denoiseVal" class="font-mono text-cyan-300">0.65</span></div>
-          <input id="denoiseIn" type="range" min="0.15" max="0.95" step="0.05" value="0.65" class="w-full accent-cyan-400">
-          <div class="text-[10px] text-zinc-400">Low (0.2) keeps original photo closely; High (0.85) heavily reimagines it.</div>
-        </div>
-      </div>
 
-      <div class="bg-zinc-900/90 border border-zinc-800 rounded-xl p-3 space-y-2.5">
-        <div>
-          <label class="text-xs font-black text-white">Prompt (What You Want)</label>
-          <div class="text-[10px] text-zinc-400 mb-1">Describe subject, lighting, camera angle, and style.</div>
-          <textarea id="promptIn" rows="3" placeholder="e.g. gritty neon alley in rain, cinematic 35mm film grain, ultra detailed" class="w-full bg-zinc-950 border border-zinc-700 rounded-lg p-2.5 text-xs text-white"></textarea>
-        </div>
-        <div>
-          <div class="text-[10px] font-bold text-zinc-400 mb-1">1-Tap Style Boosters (Tap to append; edit in Customize tab)</div>
-          <div id="styleChipsBox" class="flex flex-wrap gap-1.5"></div>
-        </div>
-        <div>
-          <label class="text-xs font-bold text-zinc-300">Negative Prompt (What To Avoid)</label>
-          <div class="text-[10px] text-zinc-400 mb-1">Automatically injected using AI Horde ### filtering.</div>
-          <input id="negPromptIn" value="blurry, lowres, watermark, deformed, extra limbs, text" class="w-full bg-zinc-950 border border-zinc-700 rounded-lg px-2.5 py-2 text-xs text-zinc-200">
-        </div>
-      </div>
-
-      <div class="bg-zinc-900/90 border border-zinc-800 rounded-xl p-3 space-y-3">
         <div class="flex items-center justify-between gap-2">
-          <div>
-            <div class="text-xs font-black text-amber-300">AI Model &amp; Uncensored Controls</div>
-            <div class="text-[10px] text-zinc-400">Live community GPUs sorted by fastest active workers</div>
-          </div>
-          <button id="refreshModelsBtn" class="px-2.5 py-1.5 rounded-lg bg-zinc-800 border border-zinc-700 text-left shrink-0">
-            <span class="block text-[11px] font-bold text-amber-300">Refresh List</span>
-            <span class="block text-[9px] text-zinc-400">Check live GPUs</span>
-          </button>
-        </div>
-        <select id="modelSelect" class="w-full bg-zinc-950 border border-zinc-700 rounded-lg px-2.5 py-2 text-xs text-white"></select>
-
-        <label class="flex items-center justify-between p-2.5 rounded-lg bg-zinc-950 border border-rose-500/40 cursor-pointer">
-          <div>
-            <span class="block text-xs font-black text-rose-300">Uncensored / NSFW Mode</span>
-            <span class="block text-[10px] text-zinc-400">Routes to unfiltered workers and disables safety blur</span>
-          </div>
-          <input id="nsfwToggle" type="checkbox" checked class="w-5 h-5 accent-rose-500">
-        </label>
-
-        <div class="grid grid-cols-2 gap-2">
-          <div>
-            <label class="block text-[11px] font-bold text-zinc-200">Dimensions</label>
-            <select id="sizePreset" class="mt-1 w-full bg-zinc-950 border border-zinc-700 rounded-lg px-2 py-2 text-xs text-white">
-              <option value="512x512">512x512 (Fastest Free)</option>
-              <option value="768x512">768x512 (Wide Landscape)</option>
-              <option value="512x768">512x768 (Tall Portrait)</option>
-              <option value="768x768">768x768 (Balanced HD)</option>
-              <option value="1024x1024">1024x1024 (SDXL Max)</option>
-            </select>
-            <div class="text-[9px] text-zinc-400 mt-0.5">Smaller sizes clear queues faster</div>
-          </div>
-          <div>
-            <label class="block text-[11px] font-bold text-zinc-200">Sampler Engine</label>
-            <select id="samplerIn" class="mt-1 w-full bg-zinc-950 border border-zinc-700 rounded-lg px-2 py-2 text-xs text-white">
-              <option value="k_euler_a">k_euler_a (Creative)</option>
-              <option value="k_dpmpp_2m">k_dpmpp_2m (Sharp/Real)</option>
-              <option value="k_dpmpp_sde">k_dpmpp_sde (Detailed)</option>
-              <option value="k_euler">k_euler (Consistent)</option>
-              <option value="DDIM">DDIM (Classic Fast)</option>
-            </select>
-            <div class="text-[9px] text-zinc-400 mt-0.5">Controls how noise refines</div>
+          <span id="mfMaskBadge" class="px-2 py-0.5 rounded bg-zinc-800 text-[10px] font-mono text-zinc-300">No Photo Loaded</span>
+          <div class="flex items-center gap-1">
+            <button id="mfUndoMaskBtn" type="button" class="px-2 py-1 rounded bg-zinc-800 text-[10px] font-bold text-white">↩️ Undo</button>
+            <button id="mfMaskInvert" type="button" class="px-2 py-1 rounded bg-zinc-800 text-[10px] font-bold text-cyan-300">🔄 Invert</button>
+            <button id="mfMaskClear" type="button" class="px-2 py-1 rounded bg-zinc-800 text-[10px] font-bold text-amber-300">🗑️ Clear</button>
+            <label class="flex items-center gap-1 px-2 py-1 rounded bg-zinc-800 text-[10px] font-bold text-rose-300 cursor-pointer"><input id="mfWandSubChk" type="checkbox" class="accent-rose-500">Sub</label>
           </div>
         </div>
 
-        <div class="grid grid-cols-2 gap-3">
-          <div>
-            <div class="flex justify-between text-[11px]"><span class="font-bold text-zinc-200">Steps</span><span id="stepsVal" class="font-mono text-fuchsia-300">25</span></div>
-            <input id="stepsIn" type="range" min="10" max="45" value="25" class="w-full accent-fuchsia-500">
-            <div class="text-[9px] text-zinc-400">More steps = finer detail, longer wait</div>
-          </div>
-          <div>
-            <div class="flex justify-between text-[11px]"><span class="font-bold text-zinc-200">CFG Guidance</span><span id="cfgVal" class="font-mono text-fuchsia-300">7</span></div>
-            <input id="cfgIn" type="range" min="1" max="15" step="0.5" value="7" class="w-full accent-fuchsia-500">
-            <div class="text-[9px] text-zinc-400">Higher sticks strictly to prompt</div>
-          </div>
+        <div class="grid grid-cols-2 gap-2.5">
+          <div><div class="flex justify-between text-[10px]"><span class="font-bold text-zinc-300">🪄 Tap Spread</span><span id="mfTolVal" class="font-mono text-rose-300">42</span></div><input id="mfTolIn" type="range" min="12" max="95" value="42" class="w-full accent-rose-500"></div>
+          <div><div class="flex justify-between text-[10px]"><span class="font-bold text-zinc-300">Edge Expand</span><span id="mfExpVal" class="font-mono text-cyan-300">+8px</span></div><input id="mfExpIn" type="range" min="0" max="18" value="8" class="w-full accent-cyan-500"></div>
         </div>
+        <div id="mfBrushBar" class="hidden"><div class="flex justify-between text-[10px]"><span class="font-bold text-zinc-300">Brush Size</span><span id="mfBrushSzVal" class="font-mono text-rose-300">26px</span></div><input id="mfBrushSzIn" type="range" min="8" max="72" value="26" class="w-full accent-rose-500"></div>
+        <div><div class="flex justify-between text-[10px]"><span class="font-bold text-zinc-200">Change Strength (Denoising)</span><span id="denoiseVal" class="font-mono text-cyan-300">0.85</span></div><input id="denoiseIn" type="range" min="0.20" max="1.00" step="0.05" value="0.85" class="w-full accent-cyan-500"><div class="text-[9px] text-zinc-400">Use 0.80–0.95 when replacing clothes or generating skin inside a mask.</div></div>
 
+        <div class="flex flex-wrap gap-1">
+          <button type="button" data-qpr="wearing a black leather jacket, matching lighting and style, high detail" data-qneg="white shirt, old clothes" class="mf-qpr px-2 py-1 rounded-lg bg-zinc-950 border border-zinc-700 text-[10px] text-zinc-200">Black Jacket</button>
+          <button type="button" data-qpr="wearing a red string bikini top, natural skin and shoulders, matching lighting and art style" data-qneg="white shirt, covered torso, vest" class="mf-qpr px-2 py-1 rounded-lg bg-zinc-950 border border-zinc-700 text-[10px] text-zinc-200">Red Bikini Top</button>
+          <button type="button" data-qpr="bare natural skin, realistic anatomy, exact matching skin tone, lighting and art style" data-qneg="white shirt, shirt, top, bra, clothing, fabric" class="mf-qpr px-2 py-1 rounded-lg bg-zinc-950 border border-zinc-700 text-[10px] text-zinc-200">Bare Skin Fill</button>
+          <button type="button" data-qpr="clean seamless background matching surroundings, empty space" data-qneg="object, person, artifacts" class="mf-qpr px-2 py-1 rounded-lg bg-zinc-950 border border-zinc-700 text-[10px] text-zinc-200">Erase Object</button>
+        </div>
+        <button id="mfZeroEditBtn" type="button" class="w-full py-2 px-3 rounded-xl bg-violet-950/80 border border-violet-400/50 text-left"><span class="block text-xs font-black text-violet-200">⚡ Text-Only Edit (No Mask • ZeroGPU Kontext)</span><span class="block text-[9px] text-violet-300/80">Best for SFW plain-English edits without selecting</span></button>
+        <div id="mfEditDiag" class="hidden"></div>
+      </div>
+
+      <div class="bg-zinc-900/95 border border-zinc-800 rounded-2xl p-3 space-y-2.5">
         <div>
-          <label class="block text-[11px] font-bold text-zinc-200">Seed (Optional)</label>
-          <input id="seedIn" placeholder="Leave blank for random every run" class="mt-1 w-full bg-zinc-950 border border-zinc-700 rounded-lg px-2.5 py-1.5 text-xs text-white font-mono">
-          <div class="text-[9px] text-zinc-400 mt-0.5">Reuse the same seed + prompt to tweak a result without losing composition</div>
+          <label class="text-xs font-black text-white">Prompt (Describe What Should APPEAR)</label>
+          <div id="mfEditTip" class="hidden text-[10px] text-amber-300 mt-0.5">Inpaint tip: Describe what replaces the red highlight (put the item to remove in Negative Prompt below).</div>
+          <textarea id="promptIn" rows="3" placeholder="Describe what you want generated or what should fill the highlighted area..." class="mt-1 w-full bg-zinc-950 border border-zinc-700 rounded-xl p-2.5 text-xs text-white"></textarea>
+          <div class="flex items-center gap-1.5 mt-1.5">
+            <button id="mfExpandBtn" type="button" class="flex-1 py-1.5 px-2.5 rounded-lg bg-indigo-600/30 border border-indigo-400/50 text-left"><span class="block text-[11px] font-black text-indigo-100">✨ AI Enhance Prompt</span><span class="block text-[9px] text-indigo-300/75">Clean tags only (blocks LLM chatter)</span></button>
+            <button id="mfUndoPromptBtn" type="button" class="hidden px-2.5 py-1.5 rounded-lg bg-zinc-800 border border-zinc-700 text-[11px] font-bold text-zinc-200">Undo</button>
+          </div>
         </div>
-      </div>
-
-      <div class="flex gap-2">
-        <button id="genBtn" class="flex-1 py-3 px-4 rounded-xl bg-fuchsia-600 hover:bg-fuchsia-500 text-white shadow-lg text-center">
-          <span class="block text-sm font-black">Generate Image</span>
-          <span class="block text-[10px] opacity-85">Send job to free uncensored GPU cluster</span>
+        <div>
+          <label class="text-xs font-bold text-zinc-300">Negative Prompt (What To Remove / Avoid)</label>
+          <input id="negPromptIn" value="blurry, lowres, deformed, bad anatomy, extra limbs, watermark, text" class="mt-1 w-full bg-zinc-950 border border-zinc-700 rounded-lg px-2.5 py-1.5 text-xs text-zinc-200">
+        </div>
+        <details class="bg-zinc-950/80 border border-zinc-800 rounded-xl p-2.5">
+          <summary class="cursor-pointer text-[11px] font-black text-zinc-300">Model, Size &amp; Engine Settings (Auto-Tuned)</summary>
+          <div class="space-y-2 mt-2">
+            <div class="flex gap-1.5">
+              <select id="modelSelect" class="flex-1 bg-zinc-900 border border-zinc-700 rounded-lg px-2 py-1.5 text-xs text-white"><option value="AUTO">Auto (Fastest Native-512px GPU)</option></select>
+              <button id="mfRefreshModelsBtn" type="button" class="px-2.5 py-1.5 rounded-lg bg-zinc-800 text-[10px] font-bold text-amber-300">Sync</button>
+            </div>
+            <div class="grid grid-cols-2 gap-2">
+              <select id="sizePreset" class="bg-zinc-900 border border-zinc-700 rounded-lg px-2 py-1.5 text-xs text-white"><option value="512x512">512x512 (Free Fast)</option><option value="384x512">384x512 (Portrait)</option><option value="512x384">512x384 (Wide)</option><option value="768x768">768x768 (Needs Kudos)</option></select>
+              <select id="samplerIn" class="bg-zinc-900 border border-zinc-700 rounded-lg px-2 py-1.5 text-xs text-white"><option value="k_euler_a">k_euler_a (Fast 1st-Order)</option><option value="k_dpmpp_2m">k_dpmpp_2m (Sharp 1st-Order)</option></select>
+            </div>
+            <div class="grid grid-cols-2 gap-2">
+              <div><div class="flex justify-between text-[10px]"><span>Steps</span><span id="stepsVal" class="font-mono text-fuchsia-300">20</span></div><input id="stepsIn" type="range" min="12" max="35" value="20" class="w-full accent-fuchsia-500"></div>
+              <div><div class="flex justify-between text-[10px]"><span>CFG</span><span id="cfgVal" class="font-mono text-fuchsia-300">7</span></div><input id="cfgIn" type="range" min="4" max="12" step="0.5" value="7" class="w-full accent-fuchsia-500"></div>
+            </div>
+            <div class="flex items-center justify-between gap-2">
+              <input id="seedIn" placeholder="Seed (optional)" class="flex-1 bg-zinc-900 border border-zinc-700 rounded-lg px-2 py-1 text-xs text-white font-mono">
+              <label class="flex items-center gap-1.5 text-xs text-zinc-300"><input id="nsfwToggle" type="checkbox" checked class="accent-fuchsia-500">Uncensored</label>
+            </div>
+          </div>
+        </details>
+        <label class="flex items-center justify-between px-2.5 py-1.5 rounded-lg bg-zinc-950 border border-zinc-800 text-[11px] text-zinc-400 cursor-pointer"><span>Clear prompt automatically after stacking to Queue</span><input id="mfAutoClearChk" type="checkbox" class="accent-fuchsia-500"></label>
+        <button id="genBtn" type="button" class="w-full py-3 rounded-xl bg-gradient-to-r from-fuchsia-600 to-purple-600 text-white shadow-lg text-center">
+          <span class="block text-sm font-black">🚀 Generate &amp; Stack in Queue</span>
+          <span class="block text-[10px] opacity-85">Sends to uncensored GPU cluster &amp; keeps editor unlocked</span>
         </button>
-        <button id="cancelBtn" class="hidden px-4 py-3 rounded-xl bg-rose-950 border border-rose-500 text-rose-200 text-center">
-          <span class="block text-xs font-black">Cancel</span>
-          <span class="block text-[9px] opacity-80">Drop job</span>
-        </button>
-      </div>
-
-      <div id="statusBox" class="hidden p-3 rounded-xl bg-black/75 border border-fuchsia-500/40 text-xs font-mono text-fuchsia-200"></div>
-
-      <div id="resultWrap" class="hidden bg-zinc-900/95 border border-emerald-500/40 rounded-xl p-3 space-y-2.5">
-        <img id="resultImg" class="w-full rounded-lg border border-zinc-700 bg-black">
-        <div id="resultMeta" class="text-[10px] font-mono text-zinc-400 break-words"></div>
-        <div class="grid grid-cols-2 gap-2">
-          <button id="dlResultBtn" class="p-2 rounded-lg bg-emerald-600 text-white text-left">
-            <span class="block text-xs font-black">Save / Open Full</span>
-            <span class="block text-[9px] opacity-85">Download image to phone</span>
-          </button>
-          <button id="remixResultBtn" class="p-2 rounded-lg bg-cyan-600 text-white text-left">
-            <span class="block text-xs font-black">Remix (Img2Img)</span>
-            <span class="block text-[9px] opacity-85">Load as source photo</span>
-          </button>
-          <button id="lockSeedBtn" class="p-2 rounded-lg bg-zinc-800 border border-zinc-700 text-zinc-100 text-left">
-            <span class="block text-xs font-black">Lock This Seed</span>
-            <span class="block text-[9px] text-zinc-400">Reuse exact composition</span>
-          </button>
-          <button id="sendVideoBtn" class="p-2 rounded-lg bg-violet-700 text-white text-left">
-            <span class="block text-xs font-black">Animate in Video</span>
-            <span class="block text-[9px] opacity-85">Send to Photo-to-Video</span>
-          </button>
+        <div id="statusBox" class="hidden p-2.5 rounded-xl bg-black/80 border border-fuchsia-500/40 text-xs font-mono text-cyan-200 break-words"></div>
+        <div id="resultCard" class="hidden bg-zinc-950 border border-emerald-500/40 rounded-xl p-2.5 space-y-2">
+          <img id="resImg" class="w-full rounded-lg bg-black max-h-96 object-contain">
+          <div id="resMeta" class="text-[10px] font-mono text-zinc-400"></div>
+          <div class="grid grid-cols-3 gap-1.5">
+            <button id="resDlBtn" type="button" class="py-1.5 rounded-lg bg-emerald-600 text-white text-[10px] font-black">Save / Open</button>
+            <button id="resRemixBtn" type="button" class="py-1.5 rounded-lg bg-cyan-600 text-white text-[10px] font-black">Edit Photo</button>
+            <button id="resVidBtn" type="button" class="py-1.5 rounded-lg bg-violet-600 text-white text-[10px] font-black">To Video</button>
+          </div>
         </div>
       </div>
     </section>
 
-    <section id="view-video" class="hidden space-y-3">
-      <div class="bg-zinc-900/90 border border-violet-500/40 rounded-xl p-4 space-y-2">
-        <div class="text-sm font-black text-violet-300">Video Lab (Ready for Patch 2)</div>
-        <p class="text-xs text-zinc-300">Patch 2 plugs right into this slot to unlock uncensored Text-to-Video &amp; Photo-to-Video via a free Kaggle/ComfyUI Cloudflare Tunnel, Gradio Spaces, and optional Pollinations keys.</p>
+    <section id="view-video" class="hidden space-y-3"></section>
+
+    <section id="view-queue" class="hidden space-y-3">
+      <div class="flex items-center justify-between gap-2 bg-zinc-900/95 border border-amber-500/40 rounded-2xl p-3">
+        <div><div class="text-xs font-black text-amber-300">Parallel Queue Deck</div><div class="text-[10px] text-zinc-400">6-strike auto-retry &amp; black-frame filter active</div></div>
+        <div class="flex gap-1.5 shrink-0">
+          <button id="mfQNewBtn" type="button" class="px-2.5 py-1.5 rounded-lg bg-fuchsia-600 text-white text-[10px] font-black">+ Stack More</button>
+          <button id="mfQClearDoneBtn" type="button" class="px-2.5 py-1.5 rounded-lg bg-zinc-800 text-zinc-300 text-[10px] font-bold">Clear Done</button>
+        </div>
       </div>
+      <div id="mfQueueList" class="space-y-2.5"></div>
     </section>
 
     <section id="view-vault" class="hidden space-y-3">
-      <div class="flex items-center justify-between">
-        <div>
-          <div class="text-xs font-black text-emerald-300">Saved Media Vault</div>
-          <div class="text-[10px] text-zinc-400">Every generation stores prompt, model &amp; seed</div>
-        </div>
-        <button id="clearVaultBtn" class="px-3 py-1.5 rounded-lg bg-rose-950 border border-rose-500/40 text-[11px] font-bold text-rose-300">Clear All</button>
+      <div class="flex items-center justify-between bg-zinc-900/95 border border-emerald-500/40 rounded-2xl p-3">
+        <div><div class="text-xs font-black text-emerald-300">Saved Media Vault</div><div class="text-[10px] text-zinc-400">Tap Edit Photo on any render to mask &amp; refine it</div></div>
+        <button id="mfVaultClearBtn" type="button" class="px-2.5 py-1.5 rounded-lg bg-rose-950 text-rose-300 text-[10px] font-bold">Clear All</button>
       </div>
-      <div id="vaultGrid" class="space-y-2.5"></div>
+      <div id="mfVaultGrid" class="space-y-2.5"></div>
     </section>
 
     <section id="view-custom" class="hidden space-y-3">
-      <div class="bg-zinc-900/90 border border-zinc-800 rounded-xl p-3 space-y-2">
-        <div class="text-xs font-black text-fuchsia-300">Studio Theme</div>
-        <div class="text-[10px] text-zinc-400">Tap any palette to restyle Media Forge instantly</div>
-        <div id="themeGrid" class="grid grid-cols-2 gap-2"></div>
-      </div>
-
-      <div class="bg-zinc-900/90 border border-zinc-800 rounded-xl p-3 space-y-2">
-        <div class="text-xs font-black text-amber-300">AI Horde API Key (Optional Speed Boost)</div>
-        <div class="text-[10px] text-zinc-400">Default 0000000000 is 100% free &amp; anonymous. Register free at aihorde.net for faster queue priority.</div>
-        <input id="apiKeyIn" class="w-full bg-zinc-950 border border-zinc-700 rounded-lg px-2.5 py-2 text-xs text-white font-mono">
-        <button id="checkKeyBtn" class="w-full py-2 rounded-lg bg-amber-500 text-zinc-950 text-xs font-black">Save Key &amp; Check Kudos Balance</button>
-        <div id="keyInfoBox" class="text-[11px] font-mono text-emerald-300"></div>
-      </div>
-
-      <div class="bg-zinc-900/90 border border-zinc-800 rounded-xl p-3 space-y-2">
-        <div class="text-xs font-black text-cyan-300">Custom Prompt Style Boosters</div>
-        <div class="text-[10px] text-zinc-400">Create your own 1-tap tag buttons for the Image tab</div>
-        <input id="newChipName" placeholder="Button label (e.g. Raw 35mm)" class="w-full bg-zinc-950 border border-zinc-700 rounded-lg px-2.5 py-1.5 text-xs text-white">
-        <input id="newChipText" placeholder="Text appended (e.g. shot on 35mm, candid, raw lighting)" class="w-full bg-zinc-950 border border-zinc-700 rounded-lg px-2.5 py-1.5 text-xs text-white">
-        <button id="addChipBtn" class="w-full py-2 rounded-lg bg-cyan-600 text-white text-xs font-black">+ Add Custom Style Button</button>
-        <div id="customChipsList" class="space-y-1.5 pt-1"></div>
+      <div class="bg-zinc-900/95 border border-zinc-800 rounded-2xl p-3 space-y-2.5">
+        <div class="flex items-center justify-between">
+          <div><div class="text-xs font-black text-cyan-300">AI Horde API Key (Optional)</div><div class="text-[10px] text-zinc-400">Free account at aihorde.net unlocks faster queues &amp; 768px HD</div></div>
+          <span id="kudosBadge" class="px-2 py-0.5 rounded bg-zinc-800 text-[10px] font-mono text-amber-300">0 Kudos</span>
+        </div>
+        <input id="apiKeyIn" placeholder="0000000000 (anonymous free)" class="w-full bg-zinc-950 border border-zinc-700 rounded-lg px-3 py-2 text-xs text-white font-mono">
+        <div class="grid grid-cols-2 gap-2">
+          <button id="saveCfgBtn" type="button" class="py-2 rounded-xl bg-cyan-600 text-white text-xs font-black">Save Key</button>
+          <button id="mfTestKeyBtn" type="button" class="py-2 rounded-xl bg-zinc-800 text-amber-300 text-xs font-black">Check Kudos</button>
+        </div>
       </div>
     </section>
   </main>
 
-  <div id="guideModal" class="hidden fixed inset-0 z-50 bg-black/85 backdrop-blur-sm flex items-center justify-center p-3">
-    <div class="w-full max-w-md bg-zinc-950 border border-cyan-500/40 rounded-2xl p-4 space-y-2.5 max-h-[82vh] overflow-y-auto">
-      <div class="flex justify-between items-center">
-        <span class="text-xs font-black uppercase text-cyan-300">Media Forge Quick Guide</span>
-        <button id="closeGuideBtn" class="px-2.5 py-1 rounded-lg bg-zinc-800 text-xs text-white font-bold">Close</button>
-      </div>
-      <div class="text-xs text-zinc-300 space-y-2">
-        <p><strong class="text-white">Text-to-Image vs Photo-to-Image:</strong> Text mode generates from scratch. Photo mode uploads your picture, shrinks it cleanly, and lets the AI restyle it based on Change Strength (Denoising).</p>
-        <p><strong class="text-white">Uncensored Mode:</strong> Sends nsfw:true and censor_nsfw:false directly to volunteer GPUs that do not block or blur adult/edgy prompts.</p>
-        <p><strong class="text-white">Queue Wait Times:</strong> Anonymous runs are 100% free but wait behind registered accounts. Pick models with high GPU counts and keep size at 512x512 or 768x768 for 10-30s renders.</p>
-        <p><strong class="text-white">Lock Seed &amp; Remix:</strong> Lock Seed keeps the exact visual layout while you tweak words. Remix loads the finished picture right back into Photo-to-Image.</p>
-      </div>
+  <div id="mfFloatingQStrip" class="hidden fixed bottom-2 inset-x-3 z-40 bg-zinc-950/95 backdrop-blur border border-amber-400/50 rounded-xl px-3 py-2 shadow-2xl flex items-center justify-between gap-2 cursor-pointer">
+    <div class="min-w-0"><div id="mfStripTitle" class="text-xs font-black text-amber-300 truncate">0 Active Renders</div><div id="mfStripSub" class="text-[10px] text-zinc-400 truncate">Tap to open Queue Deck</div></div>
+    <span class="px-2.5 py-1 rounded-lg bg-amber-500/20 border border-amber-400/40 text-[10px] font-black text-amber-200 shrink-0">Queue</span>
+  </div>
+
+  <div id="mfGuideModal" class="hidden fixed inset-0 z-50 bg-black/90 flex items-center justify-center p-4">
+    <div class="w-full max-w-md bg-zinc-900 border border-cyan-500/40 rounded-2xl p-4 space-y-2.5 text-xs text-zinc-300">
+      <div class="flex justify-between items-center"><span class="font-black text-cyan-300">How To Edit Clothes / Objects Cleanly</span><button id="mfCloseGuide" class="px-2.5 py-1 rounded bg-zinc-800 text-white font-bold">Close</button></div>
+      <p><strong>1. Highlight without tracing:</strong> In Photo Editor, tap <strong>🪄 Tap (Wand)</strong> and tap directly on the shirt. Tap shaded folds once more, or use <strong>⭕ Loop</strong> to circle it.</p>
+      <p><strong>2. Describe what REPLACES it:</strong> Do NOT type "take white shirt off" in the main prompt—that tells the AI to draw a white shirt! Instead, describe what should appear inside the highlight (e.g., <em>"red bikini top, natural skin, matching anime art style"</em>) and put <em>"white shirt, top"</em> in the Negative Prompt.</p>
+      <p><strong>3. Keep Denoise at 0.85:</strong> Low values like 0.15 leave the original shirt intact.</p>
     </div>
   </div>
 
-  <script src="./studio-core.js?v=1"></script>
+  <script src="./studio-core.js?v=4"></script>
   <script src="./video-lab.js?v=1"></script>
-  <script src="./"></script>
-  <script src="./"></script>
-  <script>if('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js?v=1');</script>
-  <script src="./" defer></script>
+  <script>if('serviceWorker' in navigator)navigator.serviceWorker.register('./sw.js?v=1');</script>
 </body>
 </html>
